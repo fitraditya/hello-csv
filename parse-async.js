@@ -15,36 +15,24 @@ function parseAsync() {
             async.forEach(parsed, function eachLine(line) {
                 line = line[0] + ' ' + line[1];
 
-                async.waterfall([
-                    function(callback) {
-                        helper.sendSms(line, function afterSending(err, sendingStatus) {
-                            let lineToLog;
-                            if (err) {
-                                debug(err.message);
-                                callback(err, null);
-                            }
-
-                            lineToLog = {
-                                sendingStatus,
-                                line,
-                            };
-                            callback(null, lineToLog);
-                        });
-                    },
-                    function(lineToLog, callback) {
-                      helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {
-                          if (err) {
-                              debug(err.message);
-                              callback(err, null);
-                          }
-
-                          callback(null, true);
-                      });
-                    }
-                ], function(err, result) {
-                    if (err)  {
+                helper.sendSms(line, function afterSending(err, sendingStatus) {
+                    let lineToLog;
+                    if (err) {
                         debug(err.message);
+                        return;
                     }
+
+                    lineToLog = {
+                        sendingStatus,
+                        line,
+                    };
+
+                    helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {
+                        if (err) {
+                            debug(err.message);
+                            return;
+                        }
+                    });
                 });
             });
         });
