@@ -12,8 +12,13 @@ const helper = require('./helper');
 function parseAsync() {
     fs.readFile(__dirname + '/sample.csv', function thenParse(err, loadedCsv) {
         parse(loadedCsv, function transformEachLine(err, parsed) {
+            let index = 0;
             async.forEach(parsed, function eachLine(line) {
                 line = line[0] + ' ' + line[1];
+                
+                if (index++ == 0) {
+                    return;
+                }
 
                 helper.sendSms(line, function afterSending(err, sendingStatus) {
                     let lineToLog;
