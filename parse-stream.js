@@ -36,7 +36,6 @@ function parseStream() {
                     sendingStatus,
                     data,
                 };
-                console.log(lineToLog);
 
                 helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {
                     if (err) {
