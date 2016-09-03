@@ -12,10 +12,10 @@ const helper = require('./helper');
 
 function parseStream() {
     let readFile = readline.createInterface({
-        input: fs.createReadStream(__dirname + '/sample.csv')
+        input: fs.createReadStream(__dirname + '/sample.csv'),
     });
 
-    let index = 0
+    let index = 0;
     readFile.on('line', function eachLine(line) {
         if (index++ == 0) {
             return;
