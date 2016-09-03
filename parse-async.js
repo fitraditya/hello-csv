@@ -15,7 +15,7 @@ function parseAsync() {
             let index = 0;
             async.forEach(parsed, function eachLine(line) {
                 line = line[0] + ' ' + line[1];
-                
+
                 if (index++ == 0) {
                     return;
                 }
