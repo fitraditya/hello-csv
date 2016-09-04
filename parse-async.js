@@ -20,24 +20,33 @@ function parseAsync() {
                     return;
                 }
 
-                helper.sendSms(line, function afterSending(err, sendingStatus) {
-                    let lineToLog;
+                async.waterfall([
+                    function sendSms(callback) {
+                        helper.sendSms(line, function afterSending(err, sendingStatus) {
+                            let lineToLog;
+                            if (err) {
+                                callback(err.message);
+                            }
+
+                            lineToLog = {
+                                sendingStatus,
+                                line,
+                            };
+                            callback(null, lineToLog);
+                        });
+                    },
+
+                    function logToS3(lineToLog, callback) {
+                        helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {
+                            if (err) {
+                                callback(err.message);
+                            }
+                        });
+                    },
+                ], function endWaterfall(err, result) {
                     if (err) {
                         debug(err.message);
-                        return;
                     }
-
-                    lineToLog = {
-                        sendingStatus,
-                        line,
-                    };
-
-                    helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {
-                        if (err) {
-                            debug(err.message);
-                            return;
-                        }
-                    });
                 });
             });
         });
