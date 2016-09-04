@@ -45,7 +45,7 @@ function parseAsync() {
                     },
                 ], function endWaterfall(err, result) {
                     if (err) {
-                        debug(err.message);
+                        debug(err);
                     }
                 });
             });
