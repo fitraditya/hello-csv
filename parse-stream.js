@@ -16,16 +16,16 @@ function parseStream() {
     });
 
     let index = 0;
-    readFile.on('line', function eachLine(line) {
+    readFile.on('line', function eachLine(row) {
         if (index++ == 0) {
             return;
         }
 
-        parse(line, function transformEachLine(err, parsed) {
+        parse(row, function transformEachLine(err, parsed) {
             // Since it has only one row, let's use index 0 to obtain the data
-            let data = parsed[0][0] + ' ' + parsed[0][1];
+            let line = parsed[0][0] + ' ' + parsed[0][1];
 
-            helper.sendSms(data, function afterSending(err, sendingStatus) {
+            helper.sendSms(line, function afterSending(err, sendingStatus) {
                 let lineToLog;
                 if (err) {
                     debug(err.message);
@@ -34,7 +34,7 @@ function parseStream() {
 
                 lineToLog = {
                     sendingStatus,
-                    data,
+                    line,
                 };
 
                 helper.logToS3(lineToLog, function afterLogging(err, loggingStatus) {

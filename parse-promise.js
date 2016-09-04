@@ -19,16 +19,16 @@ function parsePromise() {
                     } else {
                         reject(true);
                     }
-                }).then(function sendSms(data) {
+                }).then(function sendSms(line) {
                     return new Promise(function sendSmsPromise(resolve, reject) {
-                        helper.sendSms(data, function afterSending(err, sendingStatus) {
+                        helper.sendSms(line, function afterSending(err, sendingStatus) {
                             if (err) {
                                 debug(err.message);
                                 reject(err.message);
                             } else {
                                 let lineToLog = {
                                     sendingStatus,
-                                    data,
+                                    line,
                                 };
                                 resolve(lineToLog);
                             }
